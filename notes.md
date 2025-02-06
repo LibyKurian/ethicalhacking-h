@@ -133,6 +133,46 @@
 nikto -h url -Cgidirs all
 ```
 
+#### Stegnography
+- steghide
+    ```
+    steghide embed -ef abc -cf web.jpeg -sf new.jpeg -e none -p 123
+    ef = embedded file  //   abc is a text file in this example
+    cf = cover file  //     web.jpeg is a image file
+    sf = stegno file  //     new.jpeg is a stego created new file
+    e = encryption
+    p = password
+    steghide extract -sf new.jpeg  // This will exctract the hidden file 
+- openstego GUI tool (https://github.com/syvaidya/openstego/releases)
+- stegosuite
+- SNOW
+  ```
+  SNOW.EXE -C -p 1234 output.txt   // For extracting the hidden message
+  
+  // Options Available in SNOW
+    -C Compress the data if concealing, or uncompress it while extracting.
+    -Q Quiet mode, If not set means the application will report statistics such as compression percentage and amount of storage available.
+    -S Report on the approximate amount of space available for a hidden message in the text file. Line length is taken into account, but other options are ignored.
+    -p For setting the password for concealment of data and while extracting the data.
+    -l line-len When appending whitespace, snow will always produce lines shorter than this value. By default, it is set to 80.
+    -f Content of the file will get concealed in the input file.
+    -m Message String The content written in this flag will be concealed into the input file.
+
+  // Example
+    Open the uncompressed file.
+    Run the SNOW.exe file.
+    Open CMD and reach the file that you want to hide the message within.
+    Write the command like below for concealing the message into a text file:
+
+      SNOW.EXE -C -p 1234 -m "hidden message" input.txt output.txt
+      
+      SNOW.EXE It tells the CMD window that we are using the snow tool for steganography.
+      -C It is for compressing the data if concealing, or uncompressing it while extracting.
+      -p It is for a password for concealing and extracting.
+      input.txt The file in which you want to conceal the message within.
+      output.txt The file in which you want the output.
+  ```
+
 #### Web explotation
 [SQLmap cheetsheet](https://github.com/LibyKurian/ethicalhacking-h/blob/main/sqlmap_cheatsheet.md)
 ````js
@@ -178,6 +218,72 @@ Attacker (Listener)
   
  // swazycrypter encryptes the application with more complexity/hash to avoid antivirus to find it.
 
+#### Cryptography
+
+Symmetric Encryption: Use same key for Encryption and decryption
+
+Asymmetric Encryption: Use Public/Private for Encryption and Decryption
+
+##### Hashing/decoding
+
+To decrypt (crack) a hashed password:
+- Online:
+
+| **Website** | **Supports (MD5, SHA1, NTLM, etc.)** | **Notes** |
+|-------------|---------------------------------|-----------|
+|[CrackStation](https://crackstation.net/) | MD5, SHA1, SHA256, SHA512, NTLM | Large precomputed database (rainbow tables) |
+|[Hashes.com](https://hashes.com/) | MD5, SHA1, NTLM, MySQL, bcrypt | Free + premium cracking, community-driven |
+|[OnlineHashCrack](https://www.onlinehashcrack.com/) | MD5, SHA1, NTLM, WPA, bcrypt | Supports **offline cracking** (upload files) |
+|[MD5 Decrypt](https://md5decrypt.net/) | MD5, SHA1, NTLM, MySQL | Fast lookup for common hashes |
+|[CMD5](https://www.cmd5.com/) | MD5, SHA1, SHA256, MySQL | Good for **NTLM & MySQL** hashes |
+
+- Locally:
+  - Identify the Hash Type
+    ```
+    hashid hash.txt
+    hashcat --identify hash.txt
+    ```
+  - Crack the Hash
+    ```
+    // Using john (John the Ripper)
+    john --wordlist=/usr/share/wordlists/rockyou.txt hash.txt
+    john --show hash.txt   // Check results
+    
+    // Using hashcat ( Find the correct hash mode (-m) )
+    hashcat -m <HASH_MODE> -a 0 hash.txt /usr/share/wordlists/rockyou.txt
+    hashcat -m 0 -a 0 hash.txt /usr/share/wordlists/rockyou.txt   // Example
+    ```
+  - Brute Force If No Dictionary Matches
+    ```
+    hashcat -m <HASH_MODE> -a 3 hash.txt ?a?a?a?a?a?a     // (Adjust ?a?a?a... for password length.)
+    ```
+  
+  - Decode Base64 (If Encoded)
+  If the file contains Base64-encoded text, decode it first:
+    ```
+    cat hash.txt | base64 -d
+    ```
+  If the hash is common (MD5, SHA1, NTLM), rockyou.txt is usually enough to crack it!
+
+- GUI Applications
+  - Hash Calc (window based tool)
+  - MD5 Calculator (window based – git/sourceforage)
+  - Cryptoforge
+      - Not a free application
+      - We can lock/encypt a file/folder with the password
+  - Encrypt/Decrypt data with BCTTextEncoder
+  
+##### Disk Encryption
+  - Bitlocker
+  - Veracrypt (https://veracrypt.eu/en/Downloads.html)
+    - after installing/opening application , create a volume
+    - Choose an encrypted file container/ Non-system drive / entire drive
+    - Select standard and location for this file
+    - Choose encryption algorithm like AES
+    - Allot size for the folder and choose password
+    - Move the cursor for more complexity of encryption
+    - Finish the setup
+    - Now agin start the veracrypt application and select the output file and we can attach/mount it as a 'New Volumn'.
 
 
 #### More
