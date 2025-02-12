@@ -19,7 +19,7 @@ This repository is created as a **self-help guide** for my preparation for the *
   - [Linux & Windows Privilege Escalation Commands](privilege_escalation.md) *(Planned)*
 - **Other Useful Tools**
   - [John the Ripper (Password Cracking)](notes.md#hashingdecoding)
-  - [Wireshark Basics](wireshark_basics.md) *(Planned)*
+  - [Wireshark Basics](wireshark.md)
 
 ## How to Use This Repo
 1. Clone the repository:
