@@ -56,9 +56,9 @@ This includes general Linux utilities, networking tools, and penetration testing
 | `chmod 777 <file>`          | Changes file permissions. |
 | `chown user:group <file>`   | Changes file ownership. |
 
-nmap (./nmap_cheatsheet.md)
-sqlmap (./sqlmap_cheatsheet.md)
-remaining (./notes.md)
+Detailed [nmap](nmap_cheatsheet.md)
+, [sqlmap](sqlmap_cheatsheet.md)
+or [remaining](notes.md)
 
 | Command                     | Description |
 |-----------------------------|-------------|
