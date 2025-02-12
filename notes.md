@@ -3,6 +3,7 @@
 [Ethical hacking git](https://github.com/LibyKurian/ethicalhacking-h.git)
 
 <details><summary><b> ⏬ Recon </b></summary>
+  
   ##### via Web
   - [Tor Browser](https://www.torproject.org/download/)
   - [Google Search Engine](https://ahrefs.com/blog/google-advanced-search-operators/)
@@ -11,8 +12,8 @@
   - [Censys](https://censys.com/data-and-search/)
 
   ##### via application/tools
-  - sublist3r ‘ sublist3r -d domain -b all ‘
-  - Harvester – ‘ theharvester -d domain -n linkedin ‘
+  - sublist3r `sublist3r -d domain -b all`
+  - Harvester – `theharvester -d domain -n linkedin`
   - sherlock
   - userecon
   - photon
@@ -27,27 +28,24 @@
 - [OSINT framework](https://osintframework.com/)
 - [NMAP cheatsheet](https://github.com/LibyKurian/ethicalhacking-h/blob/main/nmap_cheatsheet.md) 🔗
 - SX tool : command line network scanning tool that perform Arp scanning , TCP & UDP 
-  ````js
+  ````bash
   sx arp 10.10.1.0/24
-  sx arp 10.10.10.1 /24 –json | tee arp.cache”   // for output in a file
+  sx arp 10.10.10.1 /24 –json | tee arp.cache      #for output in a file
   ````
 - GUI application
   - Angry IP scanner : Perform host discovery any OS
   - Zenmap  - nmap’s  graphical interface tool
 - uniscan
     Graphical:  Launch uniscan-gui and select required checkbox
-    Command:
-      ````
-      unicornscan 10.10.1.10 -Iv”
-      ````
+    Command: `unicornscan 10.10.1.10 -Iv`
 - Metasploit payloads(for scanning)
 - some more tools
-  ````js
-  //discover devices inside the network eth0
+  ````bash
+  #discover devices inside the network eth0
   netdiscover -i eth0
-  // enumeration
-  netstat -a 10.10.10.10 // netstat enumeration netbios
-  snmp-check 10.10.10.10 // extract users from netbios - parrot
+  #enumeration
+  netstat -a 10.10.10.10      #netstat enumeration netbios
+  snmp-check 10.10.10.10       #extract users from netbios - parrot
   masscan -e tun0 -p1-65535 -rate=1000 <ip> 
   ````
 
@@ -75,7 +73,6 @@
 | **5555** | Android Debug Bridge (ADB)     | **Android devices** in debug mode, potential for remote exploitation. |
 
 
-
 #### Enumeration
 - If SMB (port 445) is open:
 ````bash
@@ -91,9 +88,8 @@
 ````
 - enum4linux -U 10.10.60.11     #-U → users enumeration or try below
 - crackmapexec smb <IP> --users
-- Using FTP
+- If FTP (port 21) is open:
 ````bash
-  #If FTP (port 21) is open:
   ftp <TARGET-IP>
   #Try logging in with anonymous credentials:
   User: anonymous
@@ -121,34 +117,27 @@
   nmap -p 389 –script=ldap-brute –script-args ldap.base=’”cn=users,dc=CEH,dc=com”’ 10.10.1.22
   ````
 - some more:
-  ````
-  // dir enumeration
+  ````bash
+  #dir enumeration
   gobuster dir -u 10.10.0.1 -w /usr/share/wordlists/common.txt -t 50 -x php,html,txt -q
+  #dir : directory listing        #-u : host
+  #-w : wordlists        #-t : threads int / Number of concurrent threads (default 10)
+  #-x : enumerate hidden files htm, php      #-q : –quiet / Don’t print the banner and other noise
   
-  dir : directory listing
-  -u : host
-  -w : wordlists
-  -t : threads int / Number of concurrent threads (default 10)
-  -x : enumerate hidden files htm, php
-  -q : –quiet / Don’t print the banner and other noise
+  #snmp-check 10.10.1.22
+  snmp-check 10.10.1.22       #after UDP scan with nmap
   
-  //snmp-check 10.10.1.22
-  snmp-check 10.10.1.22  // after UDP scan with nmap
-  
-  // wordpress enumeration
+  #wordpress enumeration
   wpscan --url https://localchost.com --passwords=
   wpscan -u 10.10.. -e u vp
-  wpscan -u 10.10.. -e u --wordlist path/rockyou.txt //bruteforce
+  wpscan -u 10.10.. -e u --wordlist path/rockyou.txt        #bruteforce
+  #-e : enumerate      #-u : enumerate usernames       #-vp : vulnerable plugins
   
-  -e = enumerate
-  u = enumerate usernames
-  vp = vulnerable plugins
-  
-  // wordlist generation
+  #wordlist generation
   cewl -w wordlist -d 2 -m 5 http://wordpress.com
-  -d = deeph of the scanning
-  -m = long of the words
-  -w = save to a file worlist
+  #-d = deeph of the scanning
+  #-m = length of the words
+  #-w = save to a file worlist
   ````
 
 #### Vulnerability scanning
@@ -156,20 +145,19 @@
 - Tenable Nessus
 - NIST
 - CVE org (https://www.cve.org)
-```
-nikto -h url -Cgidirs all
-```
+- nikto `nikto -h url -Cgidirs all`
 
 #### Stegnography
 - steghide
-    ```
+    ````bash
     steghide embed -ef abc -cf web.jpeg -sf new.jpeg -e none -p 123
-    ef = embedded file  //   abc is a text file in this example
-    cf = cover file  //     web.jpeg is a image file
-    sf = stegno file  //     new.jpeg is a stego created new file
+    ef = embedded file      #abc is a text file in this example
+    cf = cover file      #web.jpeg is a image file
+    sf = stegno file      #new.jpeg is a stego created new file
     e = encryption
     p = password
-    steghide extract -sf new.jpeg  // This will exctract the hidden file 
+    steghide extract -sf new.jpeg      #This will exctract the hidden file
+    ````
 - openstego GUI tool (https://github.com/syvaidya/openstego/releases)
 - stegosuite
 - SNOW
@@ -235,8 +223,8 @@ Local File Inclusion (LFI) Attack (If Web App is Vulnerable)
 ````
 
 <details><summary> ⏬ DVWA</summary>
+  
 Basic Commands
-
 ````bash
   ; whoami
   && whoami #If successful, it should return the current user (e.g., www-data in Linux).
@@ -259,7 +247,7 @@ Get the file:
 - Try Accessing via a Web Browser (If DVWA Has File Access)
 ````js
   http://<TARGET-IP>/DVWA/uploads/hash.txt
-  //If the file is accessible, you can download it directly.
+  //If the file is accessible, you can download it directly // wget
 ````
 - LFI via web [browser](#web-explotation)
 - using [smb](#enumeration)
@@ -316,10 +304,11 @@ If you have Meterpreter access:
   meterpreter > help
 ````
 > How to Fix the Vulnerability?
-  - Sanitize input: Use escapeshellcmd() and escapeshellarg().
-  - Whitelist commands: Only allow specific inputs.
-  - Use prepared statements: Avoid direct execution of user input.
+  >> Sanitize input: Use escapeshellcmd() and escapeshellarg().
 
+  >> Whitelist commands: Only allow specific inputs.
+
+  >> Use prepared statements: Avoid direct execution of user input.
 </details>
 
 #### Netcat Reverse Shell
@@ -340,7 +329,7 @@ Victim (Windows/Linux)
 - Hybrid Analysis
 - Antiscan.me
   
- // swazycrypter encryptes the application with more complexity/hash to avoid antivirus to find it.
+ > swazycrypter encryptes the application with more complexity/hash to avoid antivirus to find it.
 
 #### Cryptography
 
