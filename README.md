@@ -8,17 +8,17 @@ This repository is created as a **self-help guide** for my preparation for the *
 ## Topics Covered
 - **Reconnaissance & Scanning**
   - [Nmap Cheat Sheet](nmap_cheatsheet.md)
-  - [SQLMap Commands](sqlmap_cheatsheet.md) *(Coming Soon)*
+  - [SQLMap Commands](sqlmap_cheatsheet.md)
 - **Enumeration & Exploitation**
-  - [Netcat Basics](netcat_basics.md) *(Coming Soon)*
+  - [Netcat Basics](notes.md#netcat-reverse-shell)
   - [Metasploit Usage](metasploit_usage.md) *(Coming Soon)*
 - **Web Application Security**
   - [Burp Suite Tips](burp_suite.md) *(Planned)*
-  - [OWASP Top 10](owasp_top10.md) *(Planned)*
+  - [OWASP Top 10](https://owasp.org/) *(Planned)*
 - **Privilege Escalation**
   - [Linux & Windows Privilege Escalation Commands](privilege_escalation.md) *(Planned)*
 - **Other Useful Tools**
-  - [John the Ripper (Password Cracking)](john_the_ripper.md) *(Coming Soon)*
+  - [John the Ripper (Password Cracking)](notes.md#hashingdecoding)
   - [Wireshark Basics](wireshark_basics.md) *(Planned)*
 
 ## How to Use This Repo
