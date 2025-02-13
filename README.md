@@ -13,7 +13,7 @@ This repository is created as a **self-help guide** for my preparation for the *
   - [Netcat Basics](notes.md#netcat-reverse-shell)
   - [Metasploit Usage](metasploit_usage.md) *(Coming Soon)*
 - **Web Application Security**
-  - [Burp Suite Tips](burp_suite.md) *(Planned)*
+  - [Burp Suite Tips](burpsuite.md)
   - [OWASP Top 10](https://owasp.org/) *(Planned)*
 - **Privilege Escalation**
   - [Linux & Windows Privilege Escalation Commands](privilege_escalation.md) *(Planned)*
