@@ -1,4 +1,5 @@
-# SQLMap Cheat Sheet
+# SQLMap
+SQLMap is an open-source penetration testing tool that automates the process of detecting and exploiting SQL injection vulnerabilities in database systems. It supports various database types, fingerprinting, dumping data, bypassing security mechanisms, and even gaining shell access.
 
 ## Basic Usage
 - `-u URL`  
@@ -51,3 +52,19 @@
   Prompt for an interactive operating system shell.
 - `--os-pwn`  
   Prompt for an out-of-band shell, Meterpreter, or VNC.
+
+## Usage Example
+````bash
+sqlmap -u "http://example.com/page.php?id=1" --dbs --batch --random-agent --level=5 --risk=3 --tamper=space2comment
+````
+This command performs an advanced SQL injection test on the target URL (-u). It:
+- Retrieves the list of databases (`--dbs`)
+- Runs in non-interactive mode (`--batch`)
+- Uses a randomly generated user-agent (`--random-agent`)
+- Increases scan intensity (`--level=5`) and risk factor (`--risk=3`)
+- Attempts to bypass WAFs or filters using the space2comment tamper script (`--tamper=space2comment`)
+
+---
+### 🔗 References:
+- [Official SQLMap Documentation](https://sqlmap.org)
+- [SQLMap GitHub Repository](https://github.com/sqlmapproject/sqlmap)
