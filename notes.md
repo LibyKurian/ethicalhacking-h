@@ -26,7 +26,7 @@
 
 - [Central Ops .net](https://centralops.net/co/)
 - [OSINT framework](https://osintframework.com/)
-- [NMAP cheatsheet](https://github.com/LibyKurian/ethicalhacking-h/blob/main/nmap_cheatsheet.md) 🔗
+- [NMAP cheatsheet](nmap.md) 🔗
 - SX tool : command line network scanning tool that perform Arp scanning , TCP & UDP 
   ````bash
   sx arp 10.10.1.0/24
@@ -232,7 +232,7 @@ In Cookies, If suppose we found users' as a table and administrator' as a userna
 </details>
 
 
-[SQLmap cheetsheet](https://github.com/LibyKurian/ethicalhacking-h/blob/main/sqlmap_cheatsheet.md) 🔗
+[SQLmap cheetsheet](sqlmap.md) 🔗
 ````js
 // sql injection
 sqlmap -u http://10.10.197.40/administrator.php --forms --dump
