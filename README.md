@@ -7,8 +7,8 @@ This repository is created as a **self-help guide** for my preparation for the *
 
 ## Topics Covered
 - **Reconnaissance & Scanning**
-  - [Nmap Cheat Sheet](nmap_cheatsheet.md)
-  - [SQLMap Commands](sqlmap_cheatsheet.md)
+  - [Nmap Cheat Sheet](nmap.md)
+  - [SQLMap Commands](sqlmap.md)
 - **Enumeration & Exploitation**
   - [Netcat Basics](notes.md#netcat-reverse-shell)
   - [Metasploit Usage](metasploit_usage.md) *(Coming Soon)*
