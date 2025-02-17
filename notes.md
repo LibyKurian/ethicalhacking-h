@@ -49,32 +49,39 @@
   masscan -e tun0 -p1-65535 -rate=1000 <ip> 
   ````
 
-#### Default ports
-| **Port**  | **Name**                          | **Insight (OS/Machine Identification Clues)** |
-|----------|--------------------------------|----------------------------------------------|
-| **22**   | SSH                            | Common on **Linux**, macOS, and network devices. |
-| **23**   | Telnet                         | Found on **legacy systems** (old Windows, Unix). |
-| **25**   | SMTP                           | Email servers, typically **Linux-based**. |
-| **53**   | DNS                            | BIND service suggests **Linux**, Microsoft DNS hints at **Windows Server**. |
-| **80**   | HTTP                           | Web servers (**Apache/Nginx on Linux, IIS on Windows**). |
-| **443**  | HTTPS                          | Secure web servers, **IIS version suggests Windows Server**. |
-| **3306** | MySQL                          | Mostly found on **Linux servers**. |
-| **3389** | RDP (Remote Desktop)           | **Windows-only** (Windows Server, Windows 10/11). |
-| **139**  | NetBIOS                        | **Windows-only** (Active Directory, Windows networking). |
-| **445**  | SMB                            | **Windows-only** (file sharing, domain services). Used in **EternalBlue exploits**. |
-| **21**   | FTP                            | Open source vs. proprietary FTP servers hint at OS. |
-| **135**  | RPC                            | **Windows-only** (DCE-RPC for Active Directory, remote management). |
-| **5060** | SIP                            | VoIP services, found on **Linux-based PBX servers** (Asterisk, FreePBX). |
-| **161**  | SNMP                           | Found on **network devices** (Cisco routers, managed switches). |
-| **8080** | Alternative HTTP               | Tomcat = **Linux**, IIS = **Windows**. |
-| **4444** | Metasploit Listener            | Could indicate **reverse shell activity**. |
-| **5432** | PostgreSQL                     | Database mostly found on **Linux servers**. |
-| **5985** | WinRM (Windows Remote Management) | **Windows-only** (PowerShell Remoting, Windows Server). |
-| **5555** | Android Debug Bridge (ADB)     | **Android devices** in debug mode, potential for remote exploitation. |
+#### Essential ports
+
+| **Port**  | **Service**                         | **Exploitation & Enumeration Insights** | **Insight (OS/Machine Identification)** |
+|-----|-------------|----------------------------------------------|-------------------------------------|
+| **21**   | FTP                            | 🔹 Check for **anonymous login** (`nmap --script ftp-anon`). <br> 🔹 Exploit **weak credentials**. | Open source vs. proprietary FTP servers hint at OS. |
+| **22**   | SSH                            |🔹 **Brute-force weak credentials** (`hydra -L users.txt -P passwords.txt ssh://<IP>`). | Common on **Linux**, macOS, and network devices. |
+| **23**   | Telnet                         | 🔹 **Legacy service** → Credentials **sent in cleartext**. <br> 🔹 **Intercept with Wireshark**, or brute-force (`hydra -P pass.txt telnet://<IP>`). |old Windows, Unix |
+| **25**   | SMTP (Mail)                    |🔹 Enumerate users (`nmap --script smtp-enum-users`). <br> 🔹 Open relay testing (`nmap --script smtp-open-relay`). |Email servers, typically **Linux-based** |
+| **53**   | DNS                            | 🔹 **Used in Active Directory (Windows DCs)**. <br> 🔹 If misconfigured, **zone transfer possible** (`dig axfr @<IP>`). |BIND service suggests **Linux**, Microsoft DNS hints at **Windows Server**. |
+| **80/443** | HTTP/HTTPS                     | 🔹 **Web servers** (Apache, Nginx, IIS). <br> 🔹 **SQLi/XSS/LFI scanning** (`sqlmap -u "http://<IP>/page?id=1"`). <br> 🔹 **Directory brute-force** (`gobuster dir -u http://<IP>`). | Apache/Nginx on Linux, IIS on Windows |
+| **110/995** | POP3/POP3S (Mail)             | 🔹 Email retrieval. **Can be brute-forced**. |- |
+| **143/993** | IMAP/IMAPS (Mail)             | 🔹 Email storage, **potential credential leaks**. |- |
+| **135**  | RPC                             | 🔹 **Windows-only** → Used in **DCE-RPC & Active Directory**. <br> 🔹 **Exploitable via MS08-067 (EternalBlue)**. |- |
+| **137-139** | NetBIOS                      | 🔹 **Windows-only** → Used for **file sharing & AD authentication**. <br> 🔹 **Enumerate shares (`smbclient -L //<IP> -U ""`)**. |- |
+| **389/636** | LDAP/LDAPS (Active Directory) | 🔹 **Windows Domain Controllers (DCs)**. <br> 🔹 **Enumerate AD users (`ldapsearch -h <IP> -x -s base`)**. |- |
+| **445**  | SMB                             | 🔹 **Windows-only** → Used for **file sharing & AD authentication**. <br> 🔹 Exploit with **EternalBlue (MS17-010)** (`use exploit/windows/smb/ms17_010_eternalblue`). |- |
+| **3268/3269** | Global Catalog (Active Directory) | 🔹 **Used for multi-domain queries**. <br> 🔹 Can be enumerated via LDAP queries. |- |
+| **3306** | MySQL                           |🔹 Check for **default/root credentials** (`mysql -u root -p`). | Mostly found on **Linux servers** |
+| **3389** | RDP (Remote Desktop)            | 🔹 **Windows-only** → Exploit **weak credentials** (`hydra -L users.txt -P pass.txt rdp://<IP>`). <br> 🔹 If vulnerable, use **BlueKeep (`CVE-2019-0708`)**. |- |
+| **500/4500** | IPSec (VPN)                  | 🔹 **Used in VPN services**. <br> 🔹 Can be **brute-forced for PSK (Pre-Shared Keys)**. |- |
+| **5060/5061** | SIP (VoIP)                   | 🔹 **VoIP services** → Can be **brute-forced for credentials** (`svwar -D -m INVITE -u <user> <IP>`). | found on **Linux-based PBX servers** (Asterisk, FreePBX). |
+| **161/162** | SNMP (Network Devices)       | 🔹 **Used in Cisco routers, switches, and IoT devices**. <br> 🔹 Check for **public/private community strings (`nmap --script snmp-brute`)**. | - |
+| **8080/8443** | Alternate HTTP/S            | 🔹 Found on **Tomcat servers, Admin panels**. <br> 🔹 **Tomcat Default Creds:** (`admin:admin`). | Tomcat = **Linux**, IIS = **Windows**. |
+| **4444** | Metasploit Listener             | 🔹 **If open, likely indicates a reverse shell**. <br> 🔹 Run `nc -nv <IP> 4444` to connect. | -|
+| **5432** | PostgreSQL                      |🔹 Exploit weak credentials (`nmap --script pgsql-brute`). | Database mostly found on **Linux servers**. |
+| **5985/5986** | WinRM (Windows Remote Mgmt) | 🔹 **Windows-only** → Used for **PowerShell Remoting**. <br> 🔹 Brute-force login using `evil-winrm -i <IP> -u user -p password`. | -|
+| **5555** | Android Debug Bridge (ADB)      | 🔹 **Android devices** in debug mode → Can be exploited for remote access. <br> 🔹 If open, run: `adb connect <IP>:5555 && adb shell`. | -|
+
+---
 
 
 #### Enumeration
-- If SMB (port 445) is open:
+- SMB (port 445):
 ````bash
   #list shares:
     nmap --script smb-enum-shares -p 445 <IP>
@@ -88,13 +95,14 @@
 ````
 - enum4linux -U 10.10.60.11     #-U → users enumeration or try below
 - crackmapexec smb <IP> --users
-- If FTP (port 21) is open:
+- FTP (port 21):
 ````bash
   ftp <TARGET-IP>
   #Try logging in with anonymous credentials:
   User: anonymous
   Password: (leave blank)
-  
+#OR hydra -l user -P rockyou.txt ftp://<IP>
+
   ftp> ls
   #Navigate to DVWA/uploads/ and get the file:
   ftp> cd DVWA/uploads/
@@ -104,6 +112,13 @@
   ````
   smbmap -u "admin" -p "passowrd" -H 10.10.10.10 -x "ipconfig"
   -x = command
+
+- RDP
+  ````
+  #find out if running service with nmap/metasploit(rdp_scanner)
+  #brute force with hydra
+  #use xfreerdp for gui login
+  ````
 - bruteforcing
   ````
   hydra -L user.txt -P pass.txt smb://10.10.10.4
@@ -124,8 +139,11 @@
   #-w : wordlists        #-t : threads int / Number of concurrent threads (default 10)
   #-x : enumerate hidden files htm, php      #-q : –quiet / Don’t print the banner and other noise
   
-  #snmp-check 10.10.1.22
+  #snmp
   snmp-check 10.10.1.22       #after UDP scan with nmap
+
+  #netbios
+  nmap --script nbstat.nse <IP>
   
   #wordpress enumeration
   wpscan --url https://localchost.com --passwords=
