@@ -91,3 +91,9 @@ Filter: `http contains "UNION SELECT"`
   - Extracting Information with tshark
     - Extract all IPs: `tshark -r capture.pcap -T fields -e ip.src -e ip.dst`
     - Extract URLs: `tshark -r capture.pcap -Y "http.request" -T fields -e http.host -e http.request.u`
+   
+- MQTT
+  - MQTT is a lightweight protocol used in IoT devices for communication over a broker (server).
+  - It operates on port 1883 (unencrypted) or 8883 (TLS/SSL encrypted).
+  - Used in smart home devices, sensors, industrial automation, and remote monitoring.
+  - `mqtt.msgtype == 3` msgtype 3 indicates an MQTT Publish Message.
