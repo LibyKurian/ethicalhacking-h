@@ -7,7 +7,7 @@ This repository is created as a **self-help guide** for my preparation for the *
 
 ## Topics Covered
 - **Reconnaissance & Scanning**
-  - [Nmap Cheat Sheet](nmap.md)
+  - [Nmap scanning](nmap.md)
   - [SQLMap Commands](sqlmap.md)
 - **Enumeration & Exploitation**
   - [Netcat Basics](notes.md#netcat-reverse-shell)
@@ -27,7 +27,7 @@ This repository is created as a **self-help guide** for my preparation for the *
    git clone https://github.com/LibyKurian/ethicalhacking-h.git
    ```
 2. Navigate to specific topics and refer to the markdown files for commands and notes.
-3. Check out [notes.md](notes.md) for a consolidated reference covering most topics in ethical hacking.
+3. Check out my [Notes page](notes.md) for a consolidated reference covering most topics in ethical hacking.
 
 ## Resources & References
 - [Official CEH v12 Blueprint](https://www.eccouncil.org/)
