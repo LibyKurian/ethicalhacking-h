@@ -85,11 +85,11 @@ masscan -e tun0 -p1-65535 -rate=1000 <ip>
 ```bash
 # List shares, Finds shared folders on a Windows/Linux machine
 nmap --script smb-enum-shares -p 445 <IP>
-#If the target allows anonymous access, you'll see default shared folders (C$, IPC$, ADMIN$)
-smbclient -L //<TARGET-IP> -U anonymous -N
+#If the target allows anonymous access or guest, you'll see default shared folders (C$, IPC$, ADMIN$)
+smbclient -L //<TARGET-IP> -U anonymous -N              #or -U guest
 
 # Access share
-smbclient //<TARGET-IP>/DVWA -U anonymous
+smbclient //<TARGET-IP>/DVWA -U anonymous              #or -U admin%admin
 smb: \> get uploads/hash.txt
 
 enum4linux -U 10.10.60.11     #U → users enumeration
@@ -116,7 +116,7 @@ smbmap -u "admin" -p "password" -H 10.10.10.10 -x "ipconfig"        #x → comma
 ```js
   #find out if service is running with nmap/metasploit(rdp_scanner)
   #brute force with hydra
-  #use xfreerdp for gui login or use remmina
+  xfreerdp /v:<TARGET-IP> /u:<uname> /p:<passwd>         #use xfreerdp for gui login or use remmina
 ```
   
 ### AD Explorer (LDAP)
@@ -156,15 +156,16 @@ cewl -w wordlist -d 2 -m 5 http://wordpress.com
 
 ## Vulnerability Scanning {#vulnerability-scanning}
 
-- OpenVAS/Greenbone
+- OpenVAS/Greenbone #https:  //127.0.0.1:9392 
   ```bash
   apt install openvas -y
   gvm-setup
   gvm-start
   ```
-- Tenable Nessus: `systemctl start nessusd`
+- Tenable Nessus: `systemctl start nessusd`  /8834 
 - NIST
 - CVE.org
+- nmap `nmap --script vuln 192.168.44.32 | grep -i "low"`
 - Nikto
   ```bash
   nikto -h <TARGET-IP>                                    # Basic scan
@@ -186,6 +187,9 @@ cewl -w wordlist -d 2 -m 5 http://wordpress.com
 ```bash
 # Extract hidden file
 steghide extract -sf new.jpeg
+# hidden message
+strings secret.jpg | less
+exiftool secret.jpg
 
 # Embed file
 steghide embed -ef abc -cf web.jpeg -sf new.jpeg -e none -p 123
@@ -425,6 +429,8 @@ hydra -l admin -P /usr/share/wordlists/rockyou.txt 10.10.10.43 http-post-form "/
 ## Cryptography {#cryptography}
 
 ### Password Cracking
+
+#### Key encrypted file , [here](#some_misc.md)
 #### To find the password of a ZIP file
 ```bash
 fcrackzip -v -u -D -p /usr/share/wordlists/rockyou.txt <zipfile.zip>
