@@ -1,10 +1,26 @@
 # MISC Notes
 
-- mac look `nmap -sn 10.10.55.0/24 --script=mac-lookup`
-- banner check `nmap -p 143,993 --script banner 192.168.44.0/24`
-- DC `nmap --script ldap-rootdse,smb-os-discovery -Pn 10.10.55.0/24`
+- nmap
+  ```bash
+  nmap -sC -sV -O -A -p- --min-rate=1000 <TARGET-IP>      #aggressive 
+  nmap -T4 -F --min-rate=1000 <TARGET-IP>      #faster
+  nmap -sn 10.10.55.0/24 --script=mac-lookup    #mac look 
+  nmap -p 143,993 --script banner 192.168.44.0/24    #banner check 
+  nmap --script ldap-rootdse,smb-os-discovery -Pn 10.10.55.0/24    #DC
+  ```
 - `ldapsearch -x -h <DC-IP> -s base namingContexts`
-- base64 decoder command: `echo "base64_string" | base64 -d`   
+- base64 decoder command: `echo "base64_string" | base64 -d`
+- file readers
+  ```bash
+  stat <file>    ,    file <file>        #basic
+  readelf -h <file>        #elf
+  ldd suspicious.elf        #Check Linked Libraries
+  strings suspicious.elf | less            #Extract Strings
+  chkrootkit <file>        #malicious signature check
+  rkhunter --check --rwo      #malicious signature check
+  sha384sum <file>      #SHA check
+  ```
+
 - directory traversal payloads in URL parameters, for example:  
   - If there's a page parameter: `?page=../../../foldername/prod/`
   - If there's a file parameter: `?file=../../../foldername/prod/file.txt`
@@ -60,7 +76,8 @@ cat decrypted.txt
 gpg --decrypt --passphrase "password" pixelpioneer.txt
 ```
 - Privalege
-  linPEAS - https://github.com/peass-ng/PEASS-ng/releases  
+  linPEAS - https://github.com/peass-ng/PEASS-ng/releases
+  GTFO - https://gtfobins.github.io  
   ```bash
   sudo -l
   sudo -u user2 /bin/bash
