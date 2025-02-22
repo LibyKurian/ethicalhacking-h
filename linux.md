@@ -2,7 +2,6 @@
 
 This includes general Linux utilities, networking tools, and penetration testing commands.
 
-
 | Command                     | Description |
 |-----------------------------|-------------|
 | `man <tool>`                | Opens man pages for the specified tool. |
