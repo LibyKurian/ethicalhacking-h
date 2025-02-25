@@ -11,14 +11,14 @@ This repository is created as a **self-help guide** for my preparation for the *
   - [SQLMap Commands](sqlmap.md)
 - **Enumeration & Exploitation**
   - [Netcat Basics](notes.md#netcat-reverse-shell)
-  - [Metasploit Usage](metasploit_usage.md) *(Coming Soon)*
+  - [Metasploit Usage](notes.md)
 - **Web Application Security**
   - [Burp Suite Tips](burpsuite.md)
-  - [OWASP Top 10](https://owasp.org/) *(Planned)*
+  - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - **Privilege Escalation**
-  - [Linux & Windows Privilege Escalation Commands](privilege_escalation.md) *(Planned)*
+  - [Linux & Windows Privilege Escalation Commands](some_misc.md)
 - **Other Useful Tools**
-  - [John the Ripper (Password Cracking)](notes.md#hashingdecoding)
+  - [John the Ripper (Password Cracking)](notes.md#cryptography-cryptography)
   - [Wireshark Basics](wireshark.md)
 
 ## How to Use This Repo
